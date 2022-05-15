@@ -1,6 +1,7 @@
 import javax.annotation.Nullable
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 static def gitBranch() {
     def branch = 'GitHub'
@@ -35,7 +36,6 @@ static def getProperty(@Nullable Properties properties, String name) {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '29.0.3'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
@@ -46,6 +46,9 @@ android {
         applicationId 'com.kabouzeid.gramophone'
         versionCode 179
         versionName '1.3.5'
+
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         release {
@@ -69,21 +72,33 @@ android {
         }
     }
     packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-    }
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'InvalidPackage'
-        abortOnError false
+        resources {
+            excludes += ['META-INF/LICENSE', 'META-INF/NOTICE']
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    lint {
+        abortOnError false
+        disable 'MissingTranslation', 'InvalidPackage'
+    }
+    namespace 'com.kabouzeid.gramophone'
 }
 
 dependencies {
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation "androidx.core:core-ktx:1.5.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'androidx.test.espresso:espresso-contrib:3.4.0'
+    implementation 'androidx.test.ext:junit-ktx:1.1.3'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
